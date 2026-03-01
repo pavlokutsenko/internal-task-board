@@ -46,15 +46,18 @@ export function LoginForm() {
   }
 
   return (
-    <section className="w-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-slate-900">Internal Task Board</h1>
-      <p className="mt-1 text-sm text-slate-600">Sign in to continue.</p>
+    <section className="w-full rounded-3xl border border-[#cfe0ef] bg-white/90 p-7 shadow-[0_28px_80px_-40px_rgba(15,30,70,0.55)] backdrop-blur">
+      <p className="inline-flex rounded-full border border-[#b8d8e7] bg-[#e9f9f8] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#0a7574]">
+        Team access
+      </p>
+      <h1 className="mt-4 text-3xl font-semibold text-[#132238]">Internal Task Board</h1>
+      <p className="mt-1 text-sm text-[#5f6f85]">Sign in to continue.</p>
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-[#24374f]">
           Email
           <input
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 outline-none ring-brand-500 transition focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[#ccdaea] bg-[#fbfdff] px-3 py-2.5 text-[#132238] outline-none ring-[#0f8f8d] focus:ring-2"
             type="email"
             autoComplete="email"
             placeholder="you@company.local"
@@ -64,10 +67,10 @@ export function LoginForm() {
           />
         </label>
 
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-[#24374f]">
           Password
           <input
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 outline-none ring-brand-500 transition focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[#ccdaea] bg-[#fbfdff] px-3 py-2.5 text-[#132238] outline-none ring-[#0f8f8d] focus:ring-2"
             type="password"
             autoComplete="current-password"
             placeholder="Password"
@@ -77,10 +80,10 @@ export function LoginForm() {
           />
         </label>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 
         <button
-          className="w-full rounded-md bg-brand-600 px-3 py-2 font-medium text-white transition hover:bg-brand-700"
+          className="w-full rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-3 py-2.5 font-medium text-white shadow-[0_12px_28px_-16px_rgba(15,143,141,0.85)] hover:translate-y-[-1px]"
           type="submit"
           disabled={loading}
         >

@@ -73,35 +73,35 @@ export function TasksPage() {
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-slate-900">Tasks</h2>
-        <p className="mt-1 text-sm text-slate-600">Create tasks and manage assignment from one place.</p>
+        <h2 className="text-2xl font-semibold text-[#132238]">Tasks</h2>
+        <p className="mt-1 text-sm text-[#5f6f85]">Create tasks and manage assignment from one place.</p>
       </header>
 
-      {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 
       <form
-        className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+        className="rounded-2xl border border-[#d7e3ef] bg-gradient-to-r from-[#f7fbff] to-[#f0f8ff] p-5"
         onSubmit={(event) => {
           event.preventDefault();
           void createTask();
         }}
       >
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">Create task</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-[#35506f]">Create task</h3>
         <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <input
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-sm text-[#132238] outline-none ring-[#0f8f8d] focus:ring-2"
             placeholder="Task title"
             value={newTask.title}
             onChange={(event) => updateNewTask("title", event.target.value)}
           />
           <input
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-sm text-[#132238] outline-none ring-[#0f8f8d] focus:ring-2"
             placeholder="Description"
             value={newTask.description}
             onChange={(event) => updateNewTask("description", event.target.value)}
           />
           <select
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-sm text-[#2e4664] outline-none ring-[#0f8f8d] focus:ring-2"
             value={newTask.columnId}
             onChange={(event) => updateNewTask("columnId", event.target.value)}
             disabled={sortedColumns.length === 0}
@@ -115,7 +115,7 @@ export function TasksPage() {
           </select>
 
           <select
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-sm text-[#2e4664] outline-none ring-[#0f8f8d] focus:ring-2"
             value={newTask.assigneeId}
             onChange={(event) => updateNewTask("assigneeId", event.target.value)}
           >
@@ -131,39 +131,46 @@ export function TasksPage() {
         <button
           type="submit"
           disabled={submitting || sortedColumns.length === 0}
-          className="mt-3 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          className="mt-3 rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-4 py-2 text-sm font-medium text-white shadow-[0_12px_26px_-15px_rgba(15,143,141,0.88)] hover:translate-y-[-1px]"
         >
           {submitting ? "Creating..." : "Create task"}
         </button>
 
         {sortedColumns.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-500">
-            Create a column first in <Link href="/board/columns" className="text-brand-600 underline">Columns</Link>.
+          <p className="mt-3 text-sm text-[#5f6f85]">
+            Create a column first in{" "}
+            <Link href="/board/columns" className="text-[#0a7574] underline">
+              Columns
+            </Link>
+            .
           </p>
         ) : null}
       </form>
 
       <section>
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">All tasks</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-[#35506f]">All tasks</h3>
 
         {orderedTasks.length === 0 ? (
-          <p className="mt-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-500">
+          <p className="mt-3 rounded-2xl border border-dashed border-[#c9d9ea] bg-[#f7fbff] px-4 py-6 text-sm text-[#607590]">
             No tasks yet.
           </p>
         ) : (
           <div className="mt-3 space-y-3">
             {orderedTasks.map(({ task, columnName }) => (
-              <article key={task.id} className="rounded-xl border border-slate-200 bg-white p-4">
+              <article
+                key={task.id}
+                className="rounded-2xl border border-[#d7e3ef] bg-white p-4 shadow-[0_18px_32px_-24px_rgba(16,44,79,0.7)]"
+              >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">{columnName}</p>
-                    <h4 className="text-base font-semibold text-slate-900">{task.title}</h4>
-                    <p className="mt-1 text-sm text-slate-600">{task.description || "No description"}</p>
+                    <p className="text-xs uppercase tracking-wide text-[#6c82a0]">{columnName}</p>
+                    <h4 className="text-base font-semibold text-[#132238]">{task.title}</h4>
+                    <p className="mt-1 text-sm text-[#5f6f85]">{task.description || "No description"}</p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <select
-                      className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs"
+                      className="rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-xs text-[#2e4664]"
                       value={task.assigneeId ?? ""}
                       onChange={(event) => {
                         void assignTask(task.id, event.target.value || null);
@@ -179,7 +186,7 @@ export function TasksPage() {
 
                     <button
                       type="button"
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
+                      className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
                       onClick={() => {
                         openEditModal(task);
                       }}
@@ -189,7 +196,7 @@ export function TasksPage() {
 
                     <button
                       type="button"
-                      className="rounded-lg border border-red-200 px-3 py-2 text-xs text-red-600"
+                      className="rounded-xl border border-[#f2caca] px-3 py-2 text-xs text-[#9e3a3a] hover:bg-[#fff7f7]"
                       onClick={() => {
                         setDeletingTask(task);
                       }}
@@ -199,7 +206,7 @@ export function TasksPage() {
 
                     <button
                       type="button"
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
+                      className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
                       onClick={() => {
                         setError(null);
                         setSelectedTaskId(task.id);
@@ -225,14 +232,14 @@ export function TasksPage() {
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={closeEditModal}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-3 py-2 text-sm font-medium text-white shadow-[0_12px_24px_-14px_rgba(15,143,141,0.85)] hover:translate-y-[-1px]"
               onClick={() => {
                 if (!editingTask) {
                   return;
@@ -254,7 +261,7 @@ export function TasksPage() {
           <label className="block text-sm font-medium text-slate-700">
             Title
             <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+              className="mt-1 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
               value={editingTitle}
               onChange={(event) => setEditingTitle(event.target.value)}
             />
@@ -263,7 +270,7 @@ export function TasksPage() {
           <label className="block text-sm font-medium text-slate-700">
             Description
             <textarea
-              className="mt-1 min-h-24 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+              className="mt-1 min-h-24 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
               value={editingDescription}
               onChange={(event) => setEditingDescription(event.target.value)}
             />
@@ -280,14 +287,14 @@ export function TasksPage() {
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={closeDeleteModal}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              className="rounded-xl bg-[#b64b4b] px-3 py-2 text-sm font-medium text-white hover:bg-[#a43d3d]"
               onClick={() => {
                 if (!deletingTask) {
                   return;

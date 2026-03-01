@@ -38,20 +38,20 @@ export function Modal({ open, title, description, onClose, children, footer }: M
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#071428]/50 p-4 backdrop-blur-[3px]"
       role="presentation"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl"
+        className="w-full max-w-md rounded-3xl border border-[#d4e1ee] bg-white/95 p-6 shadow-[0_30px_90px_-36px_rgba(10,34,64,0.85)] backdrop-blur"
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(event) => event.stopPropagation()}
       >
         <header>
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-          {description ? <p className="mt-1 text-sm text-slate-600">{description}</p> : null}
+          <h3 className="text-lg font-semibold text-[#132238]">{title}</h3>
+          {description ? <p className="mt-1 text-sm text-[#5f6f85]">{description}</p> : null}
         </header>
 
         <div className="mt-4">{children}</div>

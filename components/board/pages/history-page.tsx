@@ -166,18 +166,18 @@ export function HistoryPage() {
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-slate-900">Task History</h2>
-        <p className="mt-1 text-sm text-slate-600">Review all move, assign, and edit events per task.</p>
+        <h2 className="text-2xl font-semibold text-[#132238]">Task History</h2>
+        <p className="mt-1 text-sm text-[#5f6f85]">Review all move, assign, and edit events per task.</p>
       </header>
 
-      {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 
       <div className="grid gap-4 lg:grid-cols-[320px,minmax(0,1fr)]">
-        <aside className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">Select task</h3>
+        <aside className="rounded-2xl border border-[#d7e3ef] bg-gradient-to-b from-[#f7fbff] to-[#f0f8ff] p-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#35506f]">Select task</h3>
           <div className="mt-3 space-y-2">
             {tasksWithColumns.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-4 text-sm text-slate-500">
+              <p className="rounded-xl border border-dashed border-[#c9d9ea] bg-white px-3 py-4 text-sm text-[#607590]">
                 No tasks available.
               </p>
             ) : (
@@ -188,59 +188,59 @@ export function HistoryPage() {
                   onClick={() => setSelectedTaskId(task.id)}
                   className={`w-full rounded-lg border px-3 py-2 text-left transition ${
                     selectedTaskId === task.id
-                      ? "border-brand-600 bg-brand-50"
-                      : "border-slate-200 bg-white hover:border-slate-300"
+                      ? "border-[#0f8f8d] bg-[#d9f2f2]"
+                      : "border-[#d7e3ef] bg-white hover:border-[#c5d8eb]"
                   }`}
                 >
-                  <p className="text-sm font-medium text-slate-900">{task.title}</p>
-                  <p className="text-xs text-slate-500">{columnName}</p>
+                  <p className="text-sm font-medium text-[#132238]">{task.title}</p>
+                  <p className="text-xs text-[#5f6f85]">{columnName}</p>
                 </button>
               ))
             )}
           </div>
         </aside>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <section className="rounded-2xl border border-[#d7e3ef] bg-white p-4 shadow-[0_18px_32px_-24px_rgba(16,44,79,0.7)]">
           {!selectedTask ? (
-            <p className="text-sm text-slate-500">Select a task to view history.</p>
+            <p className="text-sm text-[#5f6f85]">Select a task to view history.</p>
           ) : loadingHistory ? (
-            <p className="text-sm text-slate-500">Loading history...</p>
+            <p className="text-sm text-[#5f6f85]">Loading history...</p>
           ) : history.length === 0 ? (
             <>
-              <h3 className="text-lg font-semibold text-slate-900">{selectedTask.task.title}</h3>
-              <p className="mt-2 text-sm text-slate-500">No history entries yet.</p>
+              <h3 className="text-lg font-semibold text-[#132238]">{selectedTask.task.title}</h3>
+              <p className="mt-2 text-sm text-[#5f6f85]">No history entries yet.</p>
             </>
           ) : (
             <>
-              <h3 className="text-lg font-semibold text-slate-900">{selectedTask.task.title}</h3>
-              <p className="mb-4 mt-1 text-sm text-slate-500">{selectedTask.columnName}</p>
+              <h3 className="text-lg font-semibold text-[#132238]">{selectedTask.task.title}</h3>
+              <p className="mb-4 mt-1 text-sm text-[#5f6f85]">{selectedTask.columnName}</p>
 
               <div className="space-y-3">
                 {history.map((entry) => {
                   const rows = buildHistoryRows(entry, columnNameById, userNameById);
 
                   return (
-                    <article key={entry.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                    <article key={entry.id} className="rounded-xl border border-[#d7e3ef] bg-[#f7fbff] p-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <p className="text-sm font-semibold text-slate-900">{historyTitle(entry)}</p>
-                        <p className="text-xs text-slate-500">{new Date(entry.createdAt).toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-[#132238]">{historyTitle(entry)}</p>
+                        <p className="text-xs text-[#5f6f85]">{new Date(entry.createdAt).toLocaleString()}</p>
                       </div>
 
-                      <p className="mt-1 text-xs text-slate-600">Changed by {entry.user.name}</p>
+                      <p className="mt-1 text-xs text-[#546983]">Changed by {entry.user.name}</p>
 
                       <div className="mt-3 space-y-2">
                         {rows.map((row, index) => (
                           <div
                             key={`${entry.id}-${row.label}-${index}`}
-                            className="rounded-md border border-slate-200 bg-white px-3 py-2"
+                            className="rounded-lg border border-[#d7e3ef] bg-white px-3 py-2"
                           >
-                            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{row.label}</p>
+                            <p className="text-xs font-medium uppercase tracking-wide text-[#647a95]">{row.label}</p>
                             <div className="mt-1 grid gap-2 text-sm md:grid-cols-[1fr,auto,1fr]">
-                              <p className="rounded border border-slate-200 bg-slate-50 px-2 py-1 text-slate-700">
+                              <p className="rounded border border-[#d4e1ee] bg-[#f6faff] px-2 py-1 text-[#4d6480]">
                                 {row.from}
                               </p>
-                              <p className="self-center text-center text-slate-400">→</p>
-                              <p className="rounded border border-slate-200 bg-slate-50 px-2 py-1 text-slate-900">
+                              <p className="self-center text-center text-[#9ab0c7]">→</p>
+                              <p className="rounded border border-[#d4e1ee] bg-[#f6faff] px-2 py-1 text-[#132238]">
                                 {row.to}
                               </p>
                             </div>

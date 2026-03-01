@@ -49,18 +49,21 @@ export function ColumnsPage() {
   return (
     <section className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-slate-900">Columns</h2>
-        <p className="mt-1 text-sm text-slate-600">Create, rename, reorder, and delete board columns.</p>
+        <h2 className="text-2xl font-semibold text-[#132238]">Columns</h2>
+        <p className="mt-1 text-sm text-[#5f6f85]">Create, rename, reorder, and delete board columns.</p>
       </header>
 
-      {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 
-      <form onSubmit={onCreateColumn} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <label className="block text-sm font-medium text-slate-700">
+      <form
+        onSubmit={onCreateColumn}
+        className="rounded-2xl border border-[#d7e3ef] bg-gradient-to-r from-[#f7fbff] to-[#f0f8ff] p-5"
+      >
+        <label className="block text-sm font-medium text-[#324d6c]">
           New column name
           <div className="mt-2 flex flex-col gap-2 sm:flex-row">
             <input
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+              className="w-full rounded-xl border border-[#ccd9e7] bg-white px-3 py-2 text-sm text-[#132238] outline-none ring-[#0f8f8d] focus:ring-2"
               placeholder="Backlog"
               value={newColumnName}
               onChange={(event) => {
@@ -70,7 +73,7 @@ export function ColumnsPage() {
             />
             <button
               type="submit"
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-4 py-2 text-sm font-medium text-white shadow-[0_12px_26px_-15px_rgba(15,143,141,0.88)] hover:translate-y-[-1px]"
             >
               Create column
             </button>
@@ -85,13 +88,13 @@ export function ColumnsPage() {
           return (
             <article
               key={column.id}
-              className="rounded-xl border border-slate-200 bg-white p-4"
+              className="rounded-2xl border border-[#d7e3ef] bg-white p-4 shadow-[0_18px_32px_-24px_rgba(16,44,79,0.7)]"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Position #{column.order + 1}</p>
-                  <h3 className="text-lg font-semibold text-slate-900">{column.name}</h3>
-                  <p className="text-sm text-slate-500">{tasksCount} tasks</p>
+                  <p className="text-xs uppercase tracking-wide text-[#6c82a0]">Position #{column.order + 1}</p>
+                  <h3 className="text-lg font-semibold text-[#132238]">{column.name}</h3>
+                  <p className="text-sm text-[#5f6f85]">{tasksCount} tasks</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -102,7 +105,7 @@ export function ColumnsPage() {
                       setEditingColumnId(column.id);
                       setEditingName(column.name);
                     }}
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
+                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
                   >
                     Rename
                   </button>
@@ -113,7 +116,7 @@ export function ColumnsPage() {
                       void moveColumn(column.id, column.order - 1);
                     }}
                     disabled={index === 0}
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
+                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
                   >
                     Up
                   </button>
@@ -124,7 +127,7 @@ export function ColumnsPage() {
                       void moveColumn(column.id, column.order + 1);
                     }}
                     disabled={index === sortedColumns.length - 1}
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
+                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
                   >
                     Down
                   </button>
@@ -134,7 +137,7 @@ export function ColumnsPage() {
                     onClick={() => {
                       setDeletingColumnId(column.id);
                     }}
-                    className="rounded-lg border border-red-200 px-3 py-2 text-xs text-red-700 hover:bg-red-50"
+                    className="rounded-xl border border-[#f2caca] px-3 py-2 text-xs text-[#9e3a3a] hover:bg-[#fff7f7]"
                   >
                     Delete
                   </button>
@@ -157,7 +160,7 @@ export function ColumnsPage() {
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => {
                 setEditingColumnId(null);
                 setEditingName("");
@@ -167,7 +170,7 @@ export function ColumnsPage() {
             </button>
             <button
               type="button"
-              className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-3 py-2 text-sm font-medium text-white shadow-[0_12px_24px_-14px_rgba(15,143,141,0.85)] hover:translate-y-[-1px]"
               onClick={() => {
                 void onSaveRename();
               }}
@@ -180,7 +183,7 @@ export function ColumnsPage() {
         <label className="block text-sm font-medium text-slate-700">
           Name
           <input
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
             value={editingName}
             onChange={(event) => setEditingName(event.target.value)}
           />
@@ -196,14 +199,14 @@ export function ColumnsPage() {
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => setDeletingColumnId(null)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              className="rounded-xl bg-[#b64b4b] px-3 py-2 text-sm font-medium text-white hover:bg-[#a43d3d]"
               onClick={() => {
                 if (!deletingColumnId) {
                   return;

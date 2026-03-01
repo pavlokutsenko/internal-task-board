@@ -39,14 +39,14 @@ export function TaskCard({
   return (
     <>
       <article
-        className={`rounded-lg border bg-white p-3 shadow-sm ${
-          isSelected ? "border-brand-500" : "border-slate-200"
+        className={`rounded-xl border bg-white p-3 shadow-[0_14px_24px_-18px_rgba(16,44,79,0.72)] ${
+          isSelected ? "border-[#0f8f8d] ring-2 ring-[#d9f2f2]" : "border-[#d6e2ee]"
         }`}
       >
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold text-slate-900">{task.title}</h3>
+          <h3 className="text-sm font-semibold text-[#132238]">{task.title}</h3>
           <button
-            className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600"
+            className="rounded-lg border border-[#c9d7e6] bg-[#f8fbff] px-2 py-1 text-xs text-[#48617f] hover:bg-[#eef6ff]"
             type="button"
             aria-label="Drag task"
             {...dragAttributes}
@@ -57,16 +57,16 @@ export function TaskCard({
         </div>
 
         {task.description ? (
-          <p className="mt-2 text-xs text-slate-600">{task.description}</p>
+          <p className="mt-2 text-xs text-[#5d728c]">{task.description}</p>
         ) : (
-          <p className="mt-2 text-xs text-slate-400">No description</p>
+          <p className="mt-2 text-xs text-[#8a9db2]">No description</p>
         )}
 
         <div className="mt-3 flex flex-col gap-2">
-          <label className="text-xs text-slate-500">
+          <label className="text-xs text-[#5a708a]">
             Assignee
             <select
-              className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1 text-xs"
+              className="mt-1 w-full rounded-lg border border-[#ccd9e7] bg-white px-2 py-1 text-xs text-[#2e4664]"
               value={task.assigneeId ?? ""}
               onChange={(event) => onAssign(task.id, event.target.value || null)}
             >
@@ -81,21 +81,21 @@ export function TaskCard({
 
           <div className="flex gap-2">
             <button
-              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600"
+              className="rounded-lg border border-[#c9d7e6] bg-[#f8fbff] px-2 py-1 text-xs text-[#48617f] hover:bg-[#eef6ff]"
               type="button"
               onClick={openEditModal}
             >
               Edit
             </button>
             <button
-              className="rounded border border-red-200 px-2 py-1 text-xs text-red-600"
+              className="rounded-lg border border-[#f2caca] bg-white px-2 py-1 text-xs text-[#9e3a3a] hover:bg-[#fff7f7]"
               type="button"
               onClick={() => setDeleteOpen(true)}
             >
               Delete
             </button>
             <button
-              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600"
+              className="rounded-lg border border-[#c9d7e6] bg-[#f8fbff] px-2 py-1 text-xs text-[#48617f] hover:bg-[#eef6ff]"
               type="button"
               onClick={() => onSelect(task.id)}
             >
@@ -114,14 +114,14 @@ export function TaskCard({
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => setEditOpen(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-3 py-2 text-sm font-medium text-white shadow-[0_12px_24px_-14px_rgba(15,143,141,0.85)] hover:translate-y-[-1px]"
               onClick={() => {
                 void onEdit(task.id, { title, description });
                 setEditOpen(false);
@@ -136,7 +136,7 @@ export function TaskCard({
           <label className="block text-sm font-medium text-slate-700">
             Title
             <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+              className="mt-1 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
@@ -144,7 +144,7 @@ export function TaskCard({
           <label className="block text-sm font-medium text-slate-700">
             Description
             <textarea
-              className="mt-1 min-h-24 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+              className="mt-1 min-h-24 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />
@@ -161,14 +161,14 @@ export function TaskCard({
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => setDeleteOpen(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              className="rounded-xl bg-[#b64b4b] px-3 py-2 text-sm font-medium text-white hover:bg-[#a43d3d]"
               onClick={() => {
                 void onDelete(task.id);
                 setDeleteOpen(false);

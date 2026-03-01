@@ -112,31 +112,33 @@ export function BoardColumn({
           transition,
           opacity: isDragging ? 0.6 : 1,
         }}
-        className="w-full rounded-xl border border-slate-200 bg-slate-100 p-3"
+        className="w-full rounded-2xl border border-[#d7e3ef] bg-gradient-to-b from-[#f7fbff] to-[#f2f8ff] p-3 shadow-[0_18px_36px_-28px_rgba(16,44,79,0.68)]"
       >
         <header className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">{column.name}</h2>
-            <span className="rounded-full bg-white px-2 py-1 text-xs text-slate-500">{tasks.length}</span>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#2a3f59]">{column.name}</h2>
+            <span className="rounded-full border border-[#d5e2ee] bg-white px-2 py-1 text-xs text-[#4e6580]">
+              {tasks.length}
+            </span>
           </div>
 
           <div className="flex items-center gap-1">
             <button
-              className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-600"
+              className="rounded-lg border border-[#d0dcea] bg-white px-2 py-1 text-xs text-[#4a627d] hover:border-[#b8cde4] hover:bg-[#f8fbff]"
               type="button"
               onClick={openRenameModal}
             >
               Rename
             </button>
             <button
-              className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-600"
+              className="rounded-lg border border-[#f0c4c4] bg-white px-2 py-1 text-xs text-[#9b3d3d] hover:bg-[#fff7f7]"
               type="button"
               onClick={() => setDeleteOpen(true)}
             >
               Delete
             </button>
             <button
-              className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-600"
+              className="rounded-lg border border-[#d0dcea] bg-white px-2 py-1 text-xs text-[#4a627d] hover:border-[#b8cde4] hover:bg-[#f8fbff]"
               type="button"
               aria-label="Drag column"
               {...attributes}
@@ -151,7 +153,7 @@ export function BoardColumn({
           <div
             ref={setDropNodeRef}
             className={`min-h-24 space-y-2 rounded-md p-1 transition ${
-              isOver ? "bg-brand-50" : ""
+              isOver ? "bg-[#d9f2f2]" : ""
             }`}
           >
             {tasks.map((task) => (
@@ -167,7 +169,7 @@ export function BoardColumn({
               />
             ))}
             {tasks.length === 0 ? (
-              <p className="rounded-md border border-dashed border-slate-300 bg-white px-3 py-4 text-center text-xs text-slate-500">
+              <p className="rounded-xl border border-dashed border-[#c9d9ea] bg-white px-3 py-4 text-center text-xs text-[#607590]">
                 Drop tasks here
               </p>
             ) : null}
@@ -184,14 +186,14 @@ export function BoardColumn({
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => setRenameOpen(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-xl bg-gradient-to-r from-[#0f8f8d] to-[#2666ab] px-3 py-2 text-sm font-medium text-white shadow-[0_12px_24px_-14px_rgba(15,143,141,0.85)] hover:translate-y-[-1px]"
               onClick={() => {
                 void onRename(column.id, nextName);
                 setRenameOpen(false);
@@ -205,7 +207,7 @@ export function BoardColumn({
         <label className="block text-sm font-medium text-slate-700">
           Name
           <input
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-brand-500 focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[#ccd9e7] bg-[#fbfdff] px-3 py-2 text-sm outline-none ring-[#0f8f8d] focus:ring-2"
             value={nextName}
             onChange={(event) => setNextName(event.target.value)}
           />
@@ -221,7 +223,7 @@ export function BoardColumn({
           <>
             <button
               type="button"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-sm text-[#3f5672] hover:bg-[#f7fbff]"
               onClick={() => setDeleteOpen(false)}
             >
               Cancel
@@ -229,7 +231,7 @@ export function BoardColumn({
             <button
               type="button"
               disabled={tasks.length > 0}
-              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              className="rounded-xl bg-[#b64b4b] px-3 py-2 text-sm font-medium text-white hover:bg-[#a43d3d]"
               onClick={() => {
                 void onDelete(column.id);
                 setDeleteOpen(false);

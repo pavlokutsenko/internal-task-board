@@ -48,24 +48,24 @@ export function BoardOverviewPage() {
 
   return (
     <section className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <header className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#d7e3ef] bg-gradient-to-r from-[#f7fbff] to-[#edf6ff] p-5">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-900">Board</h2>
-          <p className="mt-1 text-sm text-slate-600">Drag columns and tasks to reorder and move work.</p>
+          <h2 className="text-2xl font-semibold text-[#132238]">Board</h2>
+          <p className="mt-1 text-sm text-[#5f6f85]">Drag columns and tasks to reorder and move work.</p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+        <div className="rounded-xl border border-[#d3e0ec] bg-white px-4 py-3 text-sm text-[#3e5773] shadow-[0_10px_24px_-18px_rgba(19,34,56,0.65)]">
           <p>
             {sortedColumns.length} columns · {totalTasks} tasks
           </p>
         </div>
       </header>
 
-      {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 
       {sortedColumns.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-600">
+        <div className="rounded-2xl border border-dashed border-[#c9d9ea] bg-[#f7fbff] p-8 text-center text-sm text-[#566d88]">
           <p>No columns yet.</p>
-          <Link className="mt-2 inline-block text-brand-600 underline" href="/board/columns">
+          <Link className="mt-2 inline-block text-[#0a7574] underline" href="/board/columns">
             Open columns settings
           </Link>
         </div>
@@ -121,8 +121,8 @@ export function BoardOverviewPage() {
             ) : null}
 
             {activeColumn ? (
-              <div className="w-72 rounded-xl border border-brand-500 bg-white p-3 shadow-lg">
-                <p className="text-sm font-semibold uppercase tracking-wide text-slate-700">{activeColumn.name}</p>
+              <div className="w-72 rounded-xl border border-[#2f6ca4] bg-gradient-to-r from-[#d7efff] to-[#d8f7f3] p-3 shadow-[0_16px_28px_-16px_rgba(15,53,97,0.65)]">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[#1a3552]">{activeColumn.name}</p>
               </div>
             ) : null}
           </DragOverlay>
