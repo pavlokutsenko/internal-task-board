@@ -51,18 +51,25 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          DEPLOY_ENV_FILE_B64: ${{ secrets.DEPLOY_ENV_FILE_B64 }}
+          DEPLOY_ENV_FILE: ${{ secrets.DEPLOY_ENV_FILE }}
         run: |
           set -euo pipefail
           PORT="${DEPLOY_PORT:-22}"
           SSH_OPTS="-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
 
-          if [ -z "${DEPLOY_ENV_FILE_B64:-}" ]; then
-            echo "DEPLOY_ENV_FILE_B64 secret is required"
+          if [ -z "${DEPLOY_ENV_FILE:-}" ]; then
+            echo "DEPLOY_ENV_FILE secret is required"
             exit 1
           fi
 
-          printf "%s" "$DEPLOY_ENV_FILE_B64" | base64 -d > .env.production
+          # Support both raw multiline .env content and one-line content with escaped \n.
+          if printf "%s" "$DEPLOY_ENV_FILE" | grep -q '\\n'; then
+            printf "%s" "$DEPLOY_ENV_FILE" | sed 's/\\n/\n/g' > .env.production
+          else
+            printf "%s" "$DEPLOY_ENV_FILE" > .env.production
+          fi
+          tr -d '\r' < .env.production > .env.production.tmp
+          mv .env.production.tmp .env.production
           chmod 600 .env.production
 
           ssh $SSH_OPTS -p "$PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"

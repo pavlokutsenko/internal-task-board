@@ -192,14 +192,4 @@ Add these repository secrets in GitHub:
 - `DEPLOY_PORT` (optional, usually `22`)
 - `DEPLOY_PATH` (example: `/var/www/internal-task-board`)
 - `DEPLOY_SSH_KEY` (private SSH key content used to connect to server)
-- `DEPLOY_ENV_FILE_B64` (base64 of full `.env.production` file content)
-
-Generate `DEPLOY_ENV_FILE_B64` from your local `.env.production`:
-
-```bash
-# Linux
-base64 -w0 .env.production
-
-# macOS
-base64 < .env.production | tr -d '\n'
-```
+- `DEPLOY_ENV_FILE` (full `.env.production` file content, multiline text)
