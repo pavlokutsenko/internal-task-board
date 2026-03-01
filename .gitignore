@@ -6,3 +6,6 @@ coverage
 .env
 .env.local
 generated
+.DS_Store
+.idea
+.codex
