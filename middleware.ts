@@ -1,7 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAccessToken } from "@/lib/auth/jwt";
+import { REFRESH_COOKIE_NAME } from "@/lib/auth/cookies";
+import { verifyAccessToken, verifyRefreshToken } from "@/lib/auth/jwt";
+
+function redirectToLogin(request: NextRequest) {
+  const loginUrl = new URL("/login", request.url);
+  return NextResponse.redirect(loginUrl);
+}
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/board")) {
+    const refreshToken = request.cookies.get(REFRESH_COOKIE_NAME)?.value;
+
+    if (!refreshToken) {
+      return redirectToLogin(request);
+    }
+
+    const refreshPayload = await verifyRefreshToken(refreshToken);
+
+    if (!refreshPayload) {
+      const response = redirectToLogin(request);
+      response.cookies.set({
+        name: REFRESH_COOKIE_NAME,
+        value: "",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 0,
+      });
+      return response;
+    }
+
+    return NextResponse.next();
+  }
+
   const token = request.headers.get("authorization");
 
   if (!token || !token.startsWith("Bearer ")) {
@@ -25,5 +59,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/columns/:path*", "/api/tasks/:path*"],
+  matcher: ["/api/columns/:path*", "/api/tasks/:path*", "/board/:path*"],
 };
