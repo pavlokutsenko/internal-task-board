@@ -19,14 +19,18 @@ jobs:
       - name: Configure SSH
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_SSH_KEY_B64: ${{ secrets.DEPLOY_SSH_KEY_B64 }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Support both raw multiline key and one-line key with escaped \n.
-          if printf "%s" "$DEPLOY_SSH_KEY" | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+          # Preferred: base64-encoded private key in DEPLOY_SSH_KEY_B64.
+          if [ -n "${DEPLOY_SSH_KEY_B64:-}" ]; then
+            printf "%s" "$DEPLOY_SSH_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+          # Backward compatibility: raw private key in DEPLOY_SSH_KEY.
+          elif printf "%s" "$DEPLOY_SSH_KEY" | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
             printf "%s" "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
           else
             printf "%s" "$DEPLOY_SSH_KEY" | sed 's/\\n/\n/g' > ~/.ssh/id_ed25519
