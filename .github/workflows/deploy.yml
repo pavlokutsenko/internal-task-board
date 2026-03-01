@@ -51,13 +51,27 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_ENV_FILE_B64: ${{ secrets.DEPLOY_ENV_FILE_B64 }}
         run: |
           set -euo pipefail
           PORT="${DEPLOY_PORT:-22}"
           SSH_OPTS="-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
 
+          if [ -z "${DEPLOY_ENV_FILE_B64:-}" ]; then
+            echo "DEPLOY_ENV_FILE_B64 secret is required"
+            exit 1
+          fi
+
+          printf "%s" "$DEPLOY_ENV_FILE_B64" | base64 -d > .env.production
+          chmod 600 .env.production
+
+          ssh $SSH_OPTS -p "$PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          scp $SSH_OPTS -P "$PORT" .env.production "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.env.production"
+          rm -f .env.production
+
           ssh $SSH_OPTS -p "$PORT" "$DEPLOY_USER@$DEPLOY_HOST" "set -euo pipefail; \
             cd '$DEPLOY_PATH'; \
+            chmod 600 .env.production; \
             git fetch origin main; \
             git checkout main; \
             git pull --ff-only origin main; \
