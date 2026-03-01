@@ -24,8 +24,20 @@ jobs:
           set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf "%s" "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+
+          # Support both raw multiline key and one-line key with escaped \n.
+          if printf "%s" "$DEPLOY_SSH_KEY" | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+            printf "%s" "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          else
+            printf "%s" "$DEPLOY_SSH_KEY" | sed 's/\\n/\n/g' > ~/.ssh/id_ed25519
+          fi
+
+          # Remove CRLF if key was copied from Windows clipboard.
+          tr -d '\r' < ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.tmp
+          mv ~/.ssh/id_ed25519.tmp ~/.ssh/id_ed25519
+
           chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
@@ -38,8 +50,9 @@ jobs:
         run: |
           set -euo pipefail
           PORT="${DEPLOY_PORT:-22}"
+          SSH_OPTS="-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
 
-          ssh -p "$PORT" "$DEPLOY_USER@$DEPLOY_HOST" "set -euo pipefail; \
+          ssh $SSH_OPTS -p "$PORT" "$DEPLOY_USER@$DEPLOY_HOST" "set -euo pipefail; \
             cd '$DEPLOY_PATH'; \
             git fetch origin main; \
             git checkout main; \
