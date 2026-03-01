@@ -12,6 +12,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+ARG BUILD_DATABASE_URL="postgresql://taskboard:taskboard@localhost:5432/taskboard?schema=public"
+ENV DATABASE_URL=${BUILD_DATABASE_URL}
+
 RUN pnpm prisma generate
 RUN pnpm build
 

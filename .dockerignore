@@ -1,0 +1,14 @@
+node_modules
+.next
+.next-prod
+.next.broken.*
+coverage
+dist
+out
+.git
+.gitignore
+.env
+.env.local
+.env.production
+.codex
+.idea
