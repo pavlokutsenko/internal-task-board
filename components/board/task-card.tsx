@@ -10,8 +10,6 @@ type TaskCardProps = {
   onDelete: (taskId: string) => Promise<void>;
   onSelect: (taskId: string) => void;
   isSelected: boolean;
-  dragAttributes?: any;
-  dragListeners?: any;
 };
 
 export function TaskCard({
@@ -22,8 +20,6 @@ export function TaskCard({
   onDelete,
   onSelect,
   isSelected,
-  dragAttributes,
-  dragListeners,
 }: TaskCardProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -41,9 +37,7 @@ export function TaskCard({
       <article
         className={`rounded-xl border bg-white p-3 shadow-[0_14px_24px_-18px_rgba(16,44,79,0.72)] ${
           isSelected ? "border-[#0f8f8d] ring-2 ring-[#d9f2f2]" : "border-[#d6e2ee]"
-        } cursor-grab active:cursor-grabbing`}
-        {...dragAttributes}
-        {...dragListeners}
+        }`}
       >
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-[#132238]">{task.title}</h3>

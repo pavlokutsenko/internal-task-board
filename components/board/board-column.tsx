@@ -41,6 +41,9 @@ function SortableTaskCard({
         transition,
         opacity: isDragging ? 0.5 : 1,
       }}
+      className="cursor-grab active:cursor-grabbing"
+      {...attributes}
+      {...listeners}
     >
       <TaskCard
         task={task}
@@ -50,8 +53,6 @@ function SortableTaskCard({
         onDelete={onDelete}
         onSelect={onSelect}
         isSelected={isSelected}
-        dragAttributes={attributes}
-        dragListeners={listeners}
       />
     </div>
   );
