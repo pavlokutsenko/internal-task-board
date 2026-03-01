@@ -11,11 +11,20 @@ type SortableTaskCardProps = {
   users: User[];
   onAssign: (taskId: string, assigneeId: string | null) => Promise<void>;
   onEdit: (taskId: string, payload: { title: string; description: string }) => Promise<void>;
+  onDelete: (taskId: string) => Promise<void>;
   onSelect: (taskId: string) => void;
   isSelected: boolean;
 };
 
-function SortableTaskCard({ task, users, onAssign, onEdit, onSelect, isSelected }: SortableTaskCardProps) {
+function SortableTaskCard({
+  task,
+  users,
+  onAssign,
+  onEdit,
+  onDelete,
+  onSelect,
+  isSelected,
+}: SortableTaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: `task-${task.id}`,
     data: {
@@ -38,6 +47,7 @@ function SortableTaskCard({ task, users, onAssign, onEdit, onSelect, isSelected 
         users={users}
         onAssign={onAssign}
         onEdit={onEdit}
+        onDelete={onDelete}
         onSelect={onSelect}
         isSelected={isSelected}
         dragAttributes={attributes}
@@ -53,6 +63,7 @@ type BoardColumnProps = {
   users: User[];
   onAssign: (taskId: string, assigneeId: string | null) => Promise<void>;
   onEdit: (taskId: string, payload: { title: string; description: string }) => Promise<void>;
+  onDeleteTask: (taskId: string) => Promise<void>;
   onSelect: (taskId: string) => void;
   onRename: (columnId: string, name: string) => Promise<void>;
   onDelete: (columnId: string) => Promise<void>;
@@ -65,6 +76,7 @@ export function BoardColumn({
   users,
   onAssign,
   onEdit,
+  onDeleteTask,
   onSelect,
   onRename,
   onDelete,
@@ -149,6 +161,7 @@ export function BoardColumn({
                 users={users}
                 onAssign={onAssign}
                 onEdit={onEdit}
+                onDelete={onDeleteTask}
                 onSelect={onSelect}
                 isSelected={selectedTaskId === task.id}
               />

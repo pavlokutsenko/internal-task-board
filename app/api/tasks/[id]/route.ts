@@ -85,3 +85,56 @@ export async function PATCH(
 
   return NextResponse.json(updatedTask);
 }
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  const params = await context.params;
+  const userId = getAuthenticatedUserId(request);
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const deletedTask = await prisma.$transaction(async (tx) => {
+    const task = await tx.task.findUnique({
+      where: { id: params.id },
+      select: {
+        id: true,
+        columnId: true,
+        order: true,
+      },
+    });
+
+    if (!task) {
+      return null;
+    }
+
+    await tx.task.delete({
+      where: { id: task.id },
+    });
+
+    await tx.task.updateMany({
+      where: {
+        columnId: task.columnId,
+        order: {
+          gt: task.order,
+        },
+      },
+      data: {
+        order: {
+          decrement: 1,
+        },
+      },
+    });
+
+    return task;
+  });
+
+  if (!deletedTask) {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ id: deletedTask.id });
+}

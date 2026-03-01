@@ -460,6 +460,37 @@ export function useBoard() {
     );
   }
 
+  async function deleteTask(taskId: string) {
+    const task = tasks.find((item) => item.id === taskId);
+
+    if (!task) {
+      return;
+    }
+
+    setError(null);
+
+    const response = await apiFetch(`/api/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+
+    if (response.status === 401) {
+      await handleUnauthorized();
+      return;
+    }
+
+    if (!response.ok) {
+      setError(await responseError(response, "Could not delete task."));
+      return;
+    }
+
+    setTasks((previous) => normalizeTasks(sortedColumns, previous.filter((item) => item.id !== taskId)));
+
+    if (selectedTaskId === taskId) {
+      setSelectedTaskId(null);
+      setHistory([]);
+    }
+  }
+
   function onDragStart(event: DragStartEvent) {
     const activeId = String(event.active.id);
     const taskId = decodeTaskId(activeId);
@@ -688,6 +719,7 @@ export function useBoard() {
     createTask,
     assignTask,
     editTask,
+    deleteTask,
     onDragStart,
     onDragOver,
     onDragCancel,

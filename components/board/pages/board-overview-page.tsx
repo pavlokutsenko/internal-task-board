@@ -23,6 +23,7 @@ export function BoardOverviewPage() {
     setSelectedTaskId,
     assignTask,
     editTask,
+    deleteTask,
     activeTask,
     activeColumn,
     onDragStart,
@@ -90,6 +91,7 @@ export function BoardOverviewPage() {
                   users={users}
                   onAssign={assignTask}
                   onEdit={editTask}
+                  onDeleteTask={deleteTask}
                   onSelect={(taskId) => {
                     setSelectedTaskId(taskId);
                     setError(null);
@@ -111,6 +113,7 @@ export function BoardOverviewPage() {
                   users={users}
                   onAssign={assignTask}
                   onEdit={editTask}
+                  onDelete={deleteTask}
                   onSelect={setSelectedTaskId}
                   isSelected={false}
                 />

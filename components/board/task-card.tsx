@@ -7,6 +7,7 @@ type TaskCardProps = {
   users: User[];
   onAssign: (taskId: string, assigneeId: string | null) => Promise<void>;
   onEdit: (taskId: string, payload: { title: string; description: string }) => Promise<void>;
+  onDelete: (taskId: string) => Promise<void>;
   onSelect: (taskId: string) => void;
   isSelected: boolean;
   dragAttributes?: any;
@@ -18,12 +19,14 @@ export function TaskCard({
   users,
   onAssign,
   onEdit,
+  onDelete,
   onSelect,
   isSelected,
   dragAttributes,
   dragListeners,
 }: TaskCardProps) {
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
 
@@ -85,6 +88,13 @@ export function TaskCard({
               Edit
             </button>
             <button
+              className="rounded border border-red-200 px-2 py-1 text-xs text-red-600"
+              type="button"
+              onClick={() => setDeleteOpen(true)}
+            >
+              Delete
+            </button>
+            <button
               className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600"
               type="button"
               onClick={() => onSelect(task.id)}
@@ -140,6 +150,38 @@ export function TaskCard({
             />
           </label>
         </div>
+      </Modal>
+
+      <Modal
+        open={deleteOpen}
+        title="Delete task"
+        description="This action cannot be undone."
+        onClose={() => setDeleteOpen(false)}
+        footer={
+          <>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              onClick={() => setDeleteOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              onClick={() => {
+                void onDelete(task.id);
+                setDeleteOpen(false);
+              }}
+            >
+              Delete
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-600">
+          Task: <span className="font-medium text-slate-900">{task.title}</span>
+        </p>
       </Modal>
     </>
   );

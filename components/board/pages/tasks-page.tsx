@@ -22,11 +22,13 @@ export function TasksPage() {
     createTask,
     assignTask,
     editTask,
+    deleteTask,
     setSelectedTaskId,
   } = useBoardContext();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
+  const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
   function updateNewTask(field: keyof typeof newTask, value: string) {
     setNewTask((previous) => ({
@@ -54,6 +56,10 @@ export function TasksPage() {
     setEditingTask(null);
     setEditingTitle("");
     setEditingDescription("");
+  }
+
+  function closeDeleteModal() {
+    setDeletingTask(null);
   }
 
   if (loading) {
@@ -183,6 +189,16 @@ export function TasksPage() {
 
                     <button
                       type="button"
+                      className="rounded-lg border border-red-200 px-3 py-2 text-xs text-red-600"
+                      onClick={() => {
+                        setDeletingTask(task);
+                      }}
+                    >
+                      Delete
+                    </button>
+
+                    <button
+                      type="button"
                       className="rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-700"
                       onClick={() => {
                         setError(null);
@@ -253,6 +269,42 @@ export function TasksPage() {
             />
           </label>
         </div>
+      </Modal>
+
+      <Modal
+        open={deletingTask !== null}
+        title="Delete task"
+        description="This action cannot be undone."
+        onClose={closeDeleteModal}
+        footer={
+          <>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700"
+              onClick={closeDeleteModal}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              onClick={() => {
+                if (!deletingTask) {
+                  return;
+                }
+
+                void deleteTask(deletingTask.id);
+                closeDeleteModal();
+              }}
+            >
+              Delete
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-600">
+          Task: <span className="font-medium text-slate-900">{deletingTask?.title}</span>
+        </p>
       </Modal>
     </section>
   );
