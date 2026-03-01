@@ -1,5 +1,5 @@
-import { BoardClient } from "@/components/board-client";
+import { BoardOverviewPage } from "@/components/board/pages/board-overview-page";
 
 export default function BoardPage() {
-  return <BoardClient />;
+  return <BoardOverviewPage />;
 }

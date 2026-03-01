@@ -1,11 +1,15 @@
 node_modules
 .next
+.next-prod
+.next.broken.*
 out
 dist
 coverage
 .env
 .env.local
+.env.production
 generated
+tsconfig.tsbuildinfo
 .DS_Store
 .idea
 .codex

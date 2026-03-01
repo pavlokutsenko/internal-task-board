@@ -19,4 +19,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm db:seed && pnpm start"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && if [ \"${RUN_DB_SEED:-false}\" = \"true\" ]; then pnpm db:seed; fi && pnpm start"]

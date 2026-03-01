@@ -16,16 +16,19 @@ Minimal internal task board built with Next.js App Router, TypeScript, PostgreSQ
 - No registration
 - Exactly 3 seeded users
 - Single board with 3 seeded columns
+- Column CRUD (create, rename, delete empty column)
+- Column reorder with drag and drop
 - Task CRUD updates (create, edit, move, assign)
 - Task history (`moved`, `assigned`, `edited`)
+- Access token kept in memory (not localStorage)
 
 ## Seeded Users
 
-Default password for all users: `Password123!`
+Password for seeded users is taken from env: `SEED_DEFAULT_PASSWORD`.
 
-- alex@company.local
-- maria@company.local
-- jordan@company.local
+- pasha@company.local
+- oleg@company.local
+- gena@company.local
 
 ## Required Environment Variables
 
@@ -36,6 +39,8 @@ DATABASE_URL="postgresql://taskboard:taskboard@localhost:5432/taskboard?schema=p
 JWT_ACCESS_SECRET="replace-with-a-long-random-secret"
 JWT_REFRESH_SECRET="replace-with-a-long-random-secret"
 BCRYPT_ROUNDS="12"
+SEED_DEFAULT_PASSWORD="replace-with-strong-shared-password"
+SEED_FORCE_PASSWORD_RESET="false"
 ```
 
 ## Setup
@@ -59,6 +64,9 @@ Auth:
 Protected (JWT middleware):
 
 - `GET /api/columns`
+- `POST /api/columns`
+- `PATCH /api/columns/:id`
+- `DELETE /api/columns/:id`
 - `GET /api/tasks`
 - `POST /api/tasks`
 - `PATCH /api/tasks/:id`
@@ -76,6 +84,7 @@ app/
       refresh/route.ts
       logout/route.ts
     columns/route.ts
+    columns/[id]/route.ts
     tasks/
       route.ts
       [id]/route.ts
@@ -85,8 +94,11 @@ app/
   board/page.tsx
   login/page.tsx
 components/
-  board-client.tsx
+  board/
+    ...
   login-form.tsx
+  ui/
+    modal.tsx
 lib/
   auth/
     cookies.ts
@@ -106,14 +118,58 @@ docker-compose.yml
 Dockerfile
 ```
 
-## Docker
+## Docker (Production with Caddy + HTTPS)
+
+Target URL: `https://plane.pog-sandbox.com`
+
+### 1. DNS and Firewall
+
+- Point `plane.pog-sandbox.com` A record to your server public IP
+- Open inbound ports `80` and `443` on the server firewall/security group
+- Make sure no other service is already binding `80/443`
+
+### 2. Prepare Production Environment
 
 ```bash
-docker compose up --build
+cp .env.production.example .env.production
 ```
 
-Then run seed once (if needed):
+Set strong values in `.env.production`:
+
+- `POSTGRES_PASSWORD`
+- `JWT_ACCESS_SECRET`
+- `JWT_REFRESH_SECRET`
+- `SEED_DEFAULT_PASSWORD`
+- optional: `RUN_DB_SEED=true` for first startup only
+
+### 3. Start Stack
 
 ```bash
-docker compose exec app pnpm db:seed
+docker compose --env-file .env.production up -d --build
 ```
+
+Run seed once (recommended after first deploy):
+
+```bash
+docker compose --env-file .env.production exec app pnpm db:seed
+```
+
+Optional: force reset seeded user passwords by setting `SEED_FORCE_PASSWORD_RESET=true` before running seed.
+
+Services:
+
+- `caddy` (TLS termination and reverse proxy)
+- `app` (Next.js)
+- `db` (PostgreSQL)
+
+### 4. Verify
+
+```bash
+docker compose ps
+docker compose logs -f caddy
+docker compose logs -f app
+```
+
+When certificate issuance succeeds, app will be available at:
+
+- `https://plane.pog-sandbox.com`

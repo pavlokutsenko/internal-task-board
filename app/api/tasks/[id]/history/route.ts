@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 export async function GET(
   _request: Request,
-  context: { params: { id: string } | Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
   const task = await prisma.task.findUnique({

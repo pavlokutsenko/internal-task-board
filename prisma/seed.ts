@@ -1,14 +1,26 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../generated/prisma/client";
 import { hashPassword } from "../lib/auth/password";
 
-const DEFAULT_PASSWORD = "Password123!";
+function getSeedPassword() {
+  const value = process.env.SEED_DEFAULT_PASSWORD;
+
+  if (!value) {
+    throw new Error("SEED_DEFAULT_PASSWORD is not set");
+  }
+
+  return value;
+}
+
+function shouldForcePasswordReset() {
+  return process.env.SEED_FORCE_PASSWORD_RESET === "true";
+}
 
 const users = [
-  { email: "alex@company.local", name: "Alex Carter" },
-  { email: "maria@company.local", name: "Maria Lee" },
-  { email: "jordan@company.local", name: "Jordan Kim" },
+  { email: "pasha@pog.sandbox", name: "Pasha" },
+  { email: "oleg@pog.sandbox", name: "Oleg" },
+  { email: "gena@pog.sandbox", name: "Gena" },
 ] as const;
 
 const columns = [
@@ -24,22 +36,36 @@ async function main() {
     throw new Error("DATABASE_URL is not set");
   }
 
+  const seedPassword = getSeedPassword();
+  const forcePasswordReset = shouldForcePasswordReset();
+
   const adapter = new PrismaPg({ connectionString });
   const prisma = new PrismaClient({ adapter });
 
-  const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
+  const hashedPassword = await hashPassword(seedPassword);
 
   for (const user of users) {
-    await prisma.user.upsert({
+    const existing = await prisma.user.findUnique({
       where: { email: user.email },
-      update: {
+      select: { id: true },
+    });
+
+    if (!existing) {
+      await prisma.user.create({
+        data: {
+          email: user.email,
+          name: user.name,
+          passwordHash: hashedPassword,
+        },
+      });
+      continue;
+    }
+
+    await prisma.user.update({
+      where: { email: user.email },
+      data: {
         name: user.name,
-        passwordHash: hashedPassword,
-      },
-      create: {
-        email: user.email,
-        name: user.name,
-        passwordHash: hashedPassword,
+        ...(forcePasswordReset ? { passwordHash: hashedPassword } : {}),
       },
     });
   }
@@ -60,10 +86,9 @@ async function main() {
   await prisma.$disconnect();
 
   console.log("Seed complete.");
-  console.log("Users:");
-  users.forEach((user) => {
-    console.log(`- ${user.email} / ${DEFAULT_PASSWORD}`);
-  });
+  console.log("Users ensured:");
+  users.forEach((user) => console.log(`- ${user.email}`));
+  console.log(`Password reset mode: ${forcePasswordReset ? "enabled" : "disabled"}`);
 }
 
 main().catch((error) => {

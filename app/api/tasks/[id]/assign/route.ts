@@ -18,7 +18,7 @@ const taskInclude = {
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: { id: string } | Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   const params = await context.params;
   const userId = getAuthenticatedUserId(request);

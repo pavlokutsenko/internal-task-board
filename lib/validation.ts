@@ -29,3 +29,16 @@ export const moveTaskSchema = z.object({
 export const assignTaskSchema = z.object({
   assigneeId: z.string().uuid().nullable(),
 });
+
+export const createColumnSchema = z.object({
+  name: z.string().trim().min(1).max(50),
+});
+
+export const updateColumnSchema = z
+  .object({
+    name: z.string().trim().min(1).max(50).optional(),
+    order: z.number().int().min(0).optional(),
+  })
+  .refine((value) => value.name !== undefined || value.order !== undefined, {
+    message: "Provide name or order",
+  });

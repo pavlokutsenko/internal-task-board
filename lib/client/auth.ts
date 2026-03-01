@@ -1,21 +1,17 @@
 "use client";
 
-const ACCESS_TOKEN_KEY = "task_board_access_token";
+let accessToken: string | null = null;
 
 export function getAccessToken() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  return accessToken;
 }
 
 export function setAccessToken(token: string) {
-  localStorage.setItem(ACCESS_TOKEN_KEY, token);
+  accessToken = token;
 }
 
 export function clearAccessToken() {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  accessToken = null;
 }
 
 async function requestRefreshToken() {

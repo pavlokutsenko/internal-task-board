@@ -1,0 +1,15 @@
+# Caddy auto-manages HTTPS certificates via Let's Encrypt.
+# Make sure DNS A record points plane.pog-sandbox.com to this server.
+
+plane.pog-sandbox.com {
+  encode zstd gzip
+
+  reverse_proxy app:3000
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+  }
+}
