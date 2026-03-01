@@ -11,7 +11,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "docker:up": "docker compose --env-file .env.production up -d --build",
+    "docker:seed": "docker compose --env-file .env.production exec app pnpm db:seed"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
