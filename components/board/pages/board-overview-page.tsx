@@ -3,11 +3,7 @@
 import {
   closestCenter,
   DndContext,
-  DragCancelEvent,
-  DragEndEvent,
   DragOverlay,
-  DragOverEvent,
-  DragStartEvent,
   PointerSensor,
   pointerWithin,
   useSensor,
@@ -16,16 +12,12 @@ import {
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { BoardColumn } from "@/components/board/board-column";
-import { TaskCard } from "@/components/board/task-card";
 import { useBoardContext } from "@/lib/client/board/board-context";
 
 export function BoardOverviewPage() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const router = useRouter();
-  const [dragOverlayWidth, setDragOverlayWidth] = useState<number | null>(null);
-  const [dragOverlayHeight, setDragOverlayHeight] = useState<number | null>(null);
 
   const {
     loading,
@@ -39,7 +31,6 @@ export function BoardOverviewPage() {
     assignTask,
     editTask,
     deleteTask,
-    activeTask,
     activeColumn,
     onDragStart,
     onDragOver,
@@ -52,29 +43,6 @@ export function BoardOverviewPage() {
   const totalTasks = sortedColumns.reduce((count, column) => {
     return count + (tasksByColumn.get(column.id)?.length ?? 0);
   }, 0);
-
-  function handleDragStart(event: DragStartEvent) {
-    const initialRect = event.active.rect.current.initial;
-    setDragOverlayWidth(initialRect?.width ?? null);
-    setDragOverlayHeight(initialRect?.height ?? null);
-    onDragStart(event);
-  }
-
-  function handleDragOver(event: DragOverEvent) {
-    onDragOver(event);
-  }
-
-  function handleDragCancel(event: DragCancelEvent) {
-    setDragOverlayWidth(null);
-    setDragOverlayHeight(null);
-    onDragCancel(event);
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    setDragOverlayWidth(null);
-    setDragOverlayHeight(null);
-    void onDragEnd(event);
-  }
 
   if (loading) {
     return (
@@ -119,10 +87,10 @@ export function BoardOverviewPage() {
 
             return closestCenter(args);
           }}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
+          onDragStart={onDragStart}
+          onDragOver={onDragOver}
+          onDragEnd={onDragEnd}
+          onDragCancel={onDragCancel}
         >
           <SortableContext
             items={sortedColumns.map((column) => `column-${column.id}`)}
@@ -152,26 +120,6 @@ export function BoardOverviewPage() {
           </SortableContext>
 
           <DragOverlay>
-            {activeTask ? (
-              <div
-                className="opacity-95"
-                style={{
-                  width: dragOverlayWidth ?? undefined,
-                  minHeight: dragOverlayHeight ?? undefined,
-                }}
-              >
-                <TaskCard
-                  task={activeTask}
-                  users={users}
-                  onAssign={assignTask}
-                  onEdit={editTask}
-                  onDelete={deleteTask}
-                  onSelect={setSelectedTaskId}
-                  isSelected={false}
-                />
-              </div>
-            ) : null}
-
             {activeColumn ? (
               <div className="w-72 rounded-xl border border-[#2f6ca4] bg-gradient-to-r from-[#d7efff] to-[#d8f7f3] p-3 shadow-[0_16px_28px_-16px_rgba(15,53,97,0.65)]">
                 <p className="text-sm font-semibold uppercase tracking-wide text-[#1a3552]">{activeColumn.name}</p>
