@@ -300,9 +300,23 @@ export function useBoard() {
 
     const updated = (await response.json()) as Column;
 
-    setColumns((previous) =>
-      sortColumns(previous.map((item) => (item.id === updated.id ? { ...item, ...updated } : item))),
-    );
+    setColumns((previous) => {
+      const ordered = sortColumns(previous);
+      const fromIndex = ordered.findIndex((item) => item.id === updated.id);
+
+      if (fromIndex === -1) {
+        return previous;
+      }
+
+      const targetIndex = Math.max(0, Math.min(updated.order, ordered.length - 1));
+      const [moved] = ordered.splice(fromIndex, 1);
+      ordered.splice(targetIndex, 0, { ...moved, ...updated });
+
+      return ordered.map((item, index) => ({
+        ...item,
+        order: index,
+      }));
+    });
   }
 
   async function deleteColumn(columnId: string) {
