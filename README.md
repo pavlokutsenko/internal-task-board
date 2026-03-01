@@ -173,3 +173,22 @@ docker compose logs -f app
 When certificate issuance succeeds, app will be available at:
 
 - `https://plane.pog-sandbox.com`
+
+## GitHub Auto Deploy (main -> server)
+
+Workflow file:
+
+- `.github/workflows/deploy.yml`
+
+It runs on every push to `main` and executes on the server:
+
+1. `git pull --ff-only origin main`
+2. `docker compose --env-file .env.production up -d --build`
+
+Add these repository secrets in GitHub:
+
+- `DEPLOY_HOST` (example: `your.server.ip`)
+- `DEPLOY_USER` (example: `team`)
+- `DEPLOY_PORT` (optional, usually `22`)
+- `DEPLOY_PATH` (example: `/var/www/internal-task-board`)
+- `DEPLOY_SSH_KEY` (private SSH key content used to connect to server)
