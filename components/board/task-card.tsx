@@ -41,19 +41,15 @@ export function TaskCard({
       <article
         className={`rounded-xl border bg-white p-3 shadow-[0_14px_24px_-18px_rgba(16,44,79,0.72)] ${
           isSelected ? "border-[#0f8f8d] ring-2 ring-[#d9f2f2]" : "border-[#d6e2ee]"
-        }`}
+        } cursor-grab active:cursor-grabbing`}
+        {...dragAttributes}
+        {...dragListeners}
       >
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-[#132238]">{task.title}</h3>
-          <button
-            className="rounded-lg border border-[#c9d7e6] bg-[#f8fbff] px-2 py-1 text-xs text-[#48617f] hover:bg-[#eef6ff]"
-            type="button"
-            aria-label="Drag task"
-            {...dragAttributes}
-            {...dragListeners}
-          >
-            Drag
-          </button>
+          <span className="rounded-md bg-[#eef6ff] px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-[#567495]">
+            Move
+          </span>
         </div>
 
         {task.description ? (

@@ -1,10 +1,74 @@
 "use client";
 
+import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { FormEvent, useState } from "react";
 import { useBoardContext } from "@/lib/client/board/board-context";
+import { Column } from "@/lib/client/board/types";
 import { Modal } from "@/components/ui/modal";
 
+type SortableColumnItemProps = {
+  column: Column;
+  tasksCount: number;
+  onOpenRename: (columnId: string, name: string) => void;
+  onOpenDelete: (columnId: string) => void;
+};
+
+function SortableColumnItem({ column, tasksCount, onOpenRename, onOpenDelete }: SortableColumnItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: column.id,
+  });
+
+  return (
+    <article
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.65 : 1,
+      }}
+      className="cursor-grab rounded-2xl border border-[#d7e3ef] bg-white p-4 shadow-[0_18px_32px_-24px_rgba(16,44,79,0.7)] active:cursor-grabbing"
+      {...attributes}
+      {...listeners}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-[#6c82a0]">Position #{column.order + 1}</p>
+          <h3 className="text-lg font-semibold text-[#132238]">{column.name}</h3>
+          <p className="text-sm text-[#5f6f85]">{tasksCount} tasks</p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenRename(column.id, column.name);
+            }}
+            className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
+          >
+            Rename
+          </button>
+
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenDelete(column.id);
+            }}
+            className="rounded-xl border border-[#f2caca] px-3 py-2 text-xs text-[#9e3a3a] hover:bg-[#fff7f7]"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export function ColumnsPage() {
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const {
     loading,
     error,
@@ -36,6 +100,30 @@ export function ColumnsPage() {
     await renameColumn(editingColumnId, editingName);
     setEditingColumnId(null);
     setEditingName("");
+  }
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!over) {
+      return;
+    }
+
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    if (activeId === overId) {
+      return;
+    }
+
+    const activeIndex = sortedColumns.findIndex((column) => column.id === activeId);
+    const overIndex = sortedColumns.findIndex((column) => column.id === overId);
+
+    if (activeIndex < 0 || overIndex < 0 || activeIndex === overIndex) {
+      return;
+    }
+
+    void moveColumn(activeId, overIndex);
   }
 
   if (loading) {
@@ -81,72 +169,31 @@ export function ColumnsPage() {
         </label>
       </form>
 
-      <div className="space-y-3">
-        {sortedColumns.map((column, index) => {
-          const tasksCount = tasksByColumn.get(column.id)?.length ?? 0;
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <SortableContext items={sortedColumns.map((column) => column.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-3">
+            {sortedColumns.map((column) => {
+              const tasksCount = tasksByColumn.get(column.id)?.length ?? 0;
 
-          return (
-            <article
-              key={column.id}
-              className="rounded-2xl border border-[#d7e3ef] bg-white p-4 shadow-[0_18px_32px_-24px_rgba(16,44,79,0.7)]"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-[#6c82a0]">Position #{column.order + 1}</p>
-                  <h3 className="text-lg font-semibold text-[#132238]">{column.name}</h3>
-                  <p className="text-sm text-[#5f6f85]">{tasksCount} tasks</p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setError(null);
-                      setEditingColumnId(column.id);
-                      setEditingName(column.name);
-                    }}
-                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
-                  >
-                    Rename
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void moveColumn(column.id, column.order - 1);
-                    }}
-                    disabled={index === 0}
-                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
-                  >
-                    Up
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void moveColumn(column.id, column.order + 1);
-                    }}
-                    disabled={index === sortedColumns.length - 1}
-                    className="rounded-xl border border-[#ccd9e7] px-3 py-2 text-xs text-[#3f5672] hover:bg-[#f7fbff]"
-                  >
-                    Down
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDeletingColumnId(column.id);
-                    }}
-                    className="rounded-xl border border-[#f2caca] px-3 py-2 text-xs text-[#9e3a3a] hover:bg-[#fff7f7]"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              return (
+                <SortableColumnItem
+                  key={column.id}
+                  column={column}
+                  tasksCount={tasksCount}
+                  onOpenRename={(columnId, name) => {
+                    setError(null);
+                    setEditingColumnId(columnId);
+                    setEditingName(name);
+                  }}
+                  onOpenDelete={(columnId) => {
+                    setDeletingColumnId(columnId);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       <Modal
         open={editingColumnId !== null}
