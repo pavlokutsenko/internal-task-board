@@ -42,3 +42,19 @@ export const updateColumnSchema = z
   .refine((value) => value.name !== undefined || value.order !== undefined, {
     message: "Provide name or order",
   });
+
+const ingestTaskItemSchema = z.object({
+  title: z.string().trim().min(1).max(140),
+  description: z.string().max(2000).optional().default(""),
+  columnId: z.string().uuid().optional(),
+  columnName: z.string().trim().min(1).max(50).optional(),
+  assigneeId: z.string().uuid().nullable().optional(),
+  assigneeEmail: z.string().email().nullable().optional(),
+});
+
+export const ingestTasksSchema = z.union([
+  ingestTaskItemSchema,
+  z.object({
+    tasks: z.array(ingestTaskItemSchema).min(1).max(100),
+  }),
+]);

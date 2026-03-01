@@ -19,6 +19,7 @@ Minimal internal task board built with Next.js App Router, TypeScript, PostgreSQ
 - Column CRUD (create, rename, delete empty column)
 - Column reorder with drag and drop
 - Task CRUD updates (create, edit, move, assign)
+- Task intake API for single/bulk task creation via API key
 - Task history (`moved`, `assigned`, `edited`)
 - Access token kept in memory (not localStorage)
 
@@ -41,6 +42,7 @@ JWT_REFRESH_SECRET="replace-with-a-long-random-secret"
 BCRYPT_ROUNDS="12"
 SEED_DEFAULT_PASSWORD="replace-with-strong-shared-password"
 SEED_FORCE_PASSWORD_RESET="false"
+TASKS_INGEST_API_KEY="replace-with-long-random-ingest-key"
 ```
 
 ## Setup
@@ -74,6 +76,10 @@ Protected (JWT middleware):
 - `PATCH /api/tasks/:id/assign`
 - `GET /api/tasks/:id/history`
 
+Task intake (API key):
+
+- `POST /api/intake/tasks`
+
 ## Folder Structure
 
 ```text
@@ -83,6 +89,7 @@ app/
       login/route.ts
       refresh/route.ts
       logout/route.ts
+    intake/tasks/route.ts
     columns/route.ts
     columns/[id]/route.ts
     tasks/
@@ -118,6 +125,56 @@ docker-compose.yml
 Dockerfile
 ```
 
+## Task Intake API (No Manual UI Input)
+
+Use this endpoint to create tasks from scripts/services:
+
+- `POST /api/intake/tasks`
+- auth: header `x-api-key: <TASKS_INGEST_API_KEY>` (or `Authorization: Bearer <key>`)
+
+Single task payload:
+
+```json
+{
+  "title": "Prepare release notes",
+  "description": "v1.2 changes",
+  "columnName": "Todo",
+  "assigneeEmail": "pasha@company.local"
+}
+```
+
+Bulk payload:
+
+```json
+{
+  "tasks": [
+    {
+      "title": "Sync backlog",
+      "columnName": "Todo"
+    },
+    {
+      "title": "Fix login edge case",
+      "description": "Repro from prod logs",
+      "columnName": "In Progress",
+      "assigneeEmail": "oleg@company.local"
+    }
+  ]
+}
+```
+
+`curl` example:
+
+```bash
+curl -X POST https://plane.pog-sandbox.com/api/intake/tasks \
+  -H "content-type: application/json" \
+  -H "x-api-key: $TASKS_INGEST_API_KEY" \
+  -d '{
+    "tasks": [
+      { "title": "Auto task from API", "columnName": "Todo" }
+    ]
+  }'
+```
+
 ## Docker (Production with Caddy + HTTPS)
 
 Target URL: `https://plane.pog-sandbox.com`
@@ -140,6 +197,7 @@ Set strong values in `.env.production`:
 - `JWT_ACCESS_SECRET`
 - `JWT_REFRESH_SECRET`
 - `SEED_DEFAULT_PASSWORD`
+- `TASKS_INGEST_API_KEY`
 - optional: `RUN_DB_SEED=true` for first startup only
 
 ### 3. Start Stack
