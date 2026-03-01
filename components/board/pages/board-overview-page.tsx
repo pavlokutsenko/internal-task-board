@@ -1,9 +1,22 @@
 "use client";
 
-import { DndContext, DragOverlay, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  DragCancelEvent,
+  DragEndEvent,
+  DragOverlay,
+  DragOverEvent,
+  DragStartEvent,
+  PointerSensor,
+  pointerWithin,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { BoardColumn } from "@/components/board/board-column";
 import { TaskCard } from "@/components/board/task-card";
 import { useBoardContext } from "@/lib/client/board/board-context";
@@ -11,6 +24,8 @@ import { useBoardContext } from "@/lib/client/board/board-context";
 export function BoardOverviewPage() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const router = useRouter();
+  const [dragOverlayWidth, setDragOverlayWidth] = useState<number | null>(null);
+  const [dragOverlayHeight, setDragOverlayHeight] = useState<number | null>(null);
 
   const {
     loading,
@@ -37,6 +52,29 @@ export function BoardOverviewPage() {
   const totalTasks = sortedColumns.reduce((count, column) => {
     return count + (tasksByColumn.get(column.id)?.length ?? 0);
   }, 0);
+
+  function handleDragStart(event: DragStartEvent) {
+    const initialRect = event.active.rect.current.initial;
+    setDragOverlayWidth(initialRect?.width ?? null);
+    setDragOverlayHeight(initialRect?.height ?? null);
+    onDragStart(event);
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    onDragOver(event);
+  }
+
+  function handleDragCancel(event: DragCancelEvent) {
+    setDragOverlayWidth(null);
+    setDragOverlayHeight(null);
+    onDragCancel(event);
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setDragOverlayWidth(null);
+    setDragOverlayHeight(null);
+    void onDragEnd(event);
+  }
 
   if (loading) {
     return (
@@ -72,11 +110,19 @@ export function BoardOverviewPage() {
       ) : (
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={onDragStart}
-          onDragOver={onDragOver}
-          onDragEnd={onDragEnd}
-          onDragCancel={onDragCancel}
+          collisionDetection={(args) => {
+            const pointerCollisions = pointerWithin(args);
+
+            if (pointerCollisions.length > 0) {
+              return pointerCollisions;
+            }
+
+            return closestCenter(args);
+          }}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
         >
           <SortableContext
             items={sortedColumns.map((column) => `column-${column.id}`)}
@@ -107,7 +153,13 @@ export function BoardOverviewPage() {
 
           <DragOverlay>
             {activeTask ? (
-              <div className="w-72 opacity-95">
+              <div
+                className="opacity-95"
+                style={{
+                  width: dragOverlayWidth ?? undefined,
+                  minHeight: dragOverlayHeight ?? undefined,
+                }}
+              >
                 <TaskCard
                   task={activeTask}
                   users={users}
